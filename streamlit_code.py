@@ -45,16 +45,17 @@ st.markdown("""
 
 # Initialize NLTK data
 @st.cache_resource
-def initialize_nltk():
-    try:
-        nltk.download('punkt', quiet=True)
-        nltk.download('stopwords', quiet=True)
-    except:
-        pass
+def setup_nltk():
+    import nltk
+    nltk.download('punkt', quiet=True)
+    nltk.download('punkt_tab', quiet=True)   # 🔴 THIS IS THE FIX
+    nltk.download('stopwords', quiet=True)
+
+setup_nltk()
 
 initialize_nltk()
 
-# Helper functions
+# Helping functions
 def get_sentiment_polarity(text):
     """Calculate sentiment polarity"""
     try:
@@ -72,7 +73,7 @@ def classify_sentiment(polarity):
         return 'Neutral'
 
 def preprocess_text(text):
-    """Clean text for word cloud"""
+    """Cleaning text for word cloud"""
     text = text.lower()
     text = re.sub(r'[^a-zA-Z\s]', '', text)
     tokens = word_tokenize(text)
@@ -85,12 +86,40 @@ def preprocess_text(text):
 def extract_aspects(text):
     """Extract restaurant aspects"""
     aspects = {
-        'food': ['food', 'dish', 'meal', 'taste', 'flavor', 'delicious', 'tasty', 'cuisine'],
-        'service': ['service', 'staff', 'waiter', 'server', 'manager', 'friendly', 'helpful'],
-        'ambience': ['ambience', 'atmosphere', 'decor', 'ambiance', 'seating', 'interior'],
-        'price': ['price', 'cost', 'expensive', 'cheap', 'value', 'worth', 'money'],
-        'cleanliness': ['clean', 'hygiene', 'hygienic', 'dirty', 'neat', 'tidy']
-    }
+    'food': [
+        'food', 'dish', 'meal', 'taste', 'flavor', 'flavour', 'delicious', 'tasty',
+        'cuisine', 'menu', 'portion', 'portion size', 'fresh', 'stale', 'spicy',
+        'bland', 'overcooked', 'undercooked', 'quality', 'ingredients', 'presentation',
+        'dessert', 'starter', 'main course', 'appetizer', 'chef'
+    ],
+
+    'service': [
+        'service', 'staff', 'waiter', 'waitress', 'server', 'manager', 'host', 'hostess',
+        'friendly', 'helpful', 'rude', 'polite', 'attentive', 'slow', 'fast', 'quick',
+        'responsive', 'unprofessional', 'professional', 'courteous', 'behavior',
+        'attitude', 'customer service'
+    ],
+
+    'ambience': [
+        'ambience', 'ambiance', 'atmosphere', 'decor', 'interior', 'lighting', 'music',
+        'noise', 'noisy', 'quiet', 'crowded', 'cozy', 'comfortable', 'romantic',
+        'family-friendly', 'vibe', 'environment', 'seating', 'space', 'layout',
+        'aesthetic'
+    ],
+
+    'price': [
+        'price', 'pricing', 'cost', 'expensive', 'cheap', 'affordable', 'overpriced',
+        'reasonable', 'value', 'worth', 'money', 'bill', 'charges', 'costly',
+        'value for money', 'pricing strategy'
+    ],
+
+    'cleanliness': [
+        'clean', 'cleanliness', 'hygiene', 'hygienic', 'dirty', 'neat', 'tidy',
+        'messy', 'smelly', 'odor', 'washroom', 'restroom', 'toilet', 'sanitary',
+        'maintained', 'maintenance', 'sticky', 'greasy'
+    ]
+}
+
     
     text_lower = text.lower()
     found_aspects = []
@@ -128,15 +157,15 @@ def process_uploaded_file(df):
             date_str = str(date_str).strip()
             
             date_formats = [
-                '%m/%d/%Y %H:%M',      # 5/25/2019 15:54
-                '%d/%m/%Y %H:%M',      # 25/5/2019 15:54
-                '%Y-%m-%d %H:%M:%S',   # 2019-05-25 15:54:00
-                '%Y-%m-%d %H:%M',      # 2019-05-25 15:54
-                '%m/%d/%Y',            # 5/25/2019
-                '%d/%m/%Y',            # 25/5/2019
-                '%Y-%m-%d',            # 2019-05-25
-                '%m-%d-%Y',            # 5-25-2019
-                '%d-%m-%Y',            # 25-5-2019
+                '%m/%d/%Y %H:%M',      
+                '%d/%m/%Y %H:%M',      
+                '%Y-%m-%d %H:%M:%S',   
+                '%Y-%m-%d %H:%M',     
+                '%m/%d/%Y',            
+                '%d/%m/%Y',            
+                '%Y-%m-%d',            
+                '%m-%d-%Y',            
+                '%d-%m-%Y',            
             ]
             
             for fmt in date_formats:
@@ -145,29 +174,29 @@ def process_uploaded_file(df):
                 except:
                     continue
             
-            # If all formats fail, try pandas auto-parsing
+            # If all formats fail, trying pandas auto-parsing
             try:
                 return pd.to_datetime(date_str, infer_datetime_format=True)
             except:
                 return pd.NaT
         
-        # Show progress for date parsing
+        # Showing progress for date parsing
         with st.spinner("Parsing dates..."):
             df_clean['Time'] = df_clean['Time'].apply(parse_date_flexible)
         
-        # Count how many dates were successfully parsed
+        # Counting how many dates were successfully parsed
         valid_dates = df_clean['Time'].notna().sum()
         total_dates = len(df_clean)
         
         st.info(f"✓ Successfully parsed {valid_dates}/{total_dates} dates")
         
         if valid_dates == 0:
-            st.error("❌ Could not parse any dates. Please check the Time column format.")
+            st.error("Could not parse any dates. Please check the Time column format.")
             st.write("**Sample Time values:**")
             st.write(df['Time'].head(10).tolist())
             return None
         
-        # Remove invalid rows
+        # Removing invalid rows
         df_clean = df_clean[df_clean['Time'].notna()]
         df_clean = df_clean[df_clean['Review'].str.strip() != '']
         df_clean = df_clean[df_clean['Rating'].notna()]
@@ -182,7 +211,7 @@ def process_uploaded_file(df):
         st.code(traceback.format_exc())
         return None
     
-    # Add date features
+    # Adding date features
     df_clean['Year_Month'] = df_clean['Time'].dt.to_period('M').astype(str)
     df_clean['Month_Name'] = df_clean['Time'].dt.strftime('%B %Y')
     
@@ -201,18 +230,45 @@ def process_uploaded_file(df):
 def create_aspect_dataframe(df_clean):
     """Create detailed aspect analysis"""
     aspect_data = []
-    aspects_dict = {
-        'food': ['food', 'dish', 'meal', 'taste', 'flavor', 'delicious', 'tasty', 'cuisine'],
-        'service': ['service', 'staff', 'waiter', 'server', 'manager', 'friendly', 'helpful'],
-        'ambience': ['ambience', 'atmosphere', 'decor', 'ambiance', 'seating', 'interior'],
-        'price': ['price', 'cost', 'expensive', 'cheap', 'value', 'worth', 'money'],
-        'cleanliness': ['clean', 'hygiene', 'hygienic', 'dirty', 'neat', 'tidy']
-    }
+    aspects_dict ={
+    'food': [
+        'food', 'dish', 'meal', 'taste', 'flavor', 'flavour', 'delicious', 'tasty',
+        'cuisine', 'menu', 'portion', 'portion size', 'fresh', 'stale', 'spicy',
+        'bland', 'overcooked', 'undercooked', 'quality', 'ingredients', 'presentation',
+        'dessert', 'starter', 'main course', 'appetizer', 'chef'
+    ],
+
+    'service': [
+        'service', 'staff', 'waiter', 'waitress', 'server', 'manager', 'host', 'hostess',
+        'friendly', 'helpful', 'rude', 'polite', 'attentive', 'slow', 'fast', 'quick',
+        'responsive', 'unprofessional', 'professional', 'courteous', 'behavior',
+        'attitude', 'customer service'
+    ],
+
+    'ambience': [
+        'ambience', 'ambiance', 'atmosphere', 'decor', 'interior', 'lighting', 'music',
+        'noise', 'noisy', 'quiet', 'crowded', 'cozy', 'comfortable', 'romantic',
+        'family-friendly', 'vibe', 'environment', 'seating', 'space', 'layout',
+        'aesthetic'
+    ],
+
+    'price': [
+        'price', 'pricing', 'cost', 'expensive', 'cheap', 'affordable', 'overpriced',
+        'reasonable', 'value', 'worth', 'money', 'bill', 'charges', 'costly',
+        'value for money', 'pricing strategy'
+    ],
+
+    'cleanliness': [
+        'clean', 'cleanliness', 'hygiene', 'hygienic', 'dirty', 'neat', 'tidy',
+        'messy', 'smelly', 'odor', 'washroom', 'restroom', 'toilet', 'sanitary',
+        'maintained', 'maintenance', 'sticky', 'greasy'
+    ]
+}
     
     for idx, row in df_clean.iterrows():
         for aspect in row['Aspects']:
             if aspect != 'general':
-                # Get aspect-specific sentiment
+                # Getting aspect-specific sentiment
                 text_lower = row['Review'].lower()
                 sentences = row['Review'].split('.')
                 aspect_sentences = [s for s in sentences if any(kw in s.lower() for kw in aspects_dict[aspect])]
@@ -265,10 +321,10 @@ def main():
     # Main content
     if uploaded_file is not None:
         try:
-            # Reset file pointer
+            # Resetting file pointer
             uploaded_file.seek(0)
             
-            # Load data with error handling
+            # Loading data with error handling
             st.write("### 📂 Loading Data...")
             try:
                 df = pd.read_csv(uploaded_file, encoding='utf-8')
@@ -284,12 +340,12 @@ def main():
             
             st.success(f"✓ Loaded {len(df)} rows, {len(df.columns)} columns")
             
-            # Show data preview - ALWAYS EXPANDED so user can see the data
+            # Showing data preview - ALWAYS EXPANDED so user can see the data
             with st.expander("👀 View Uploaded Data", expanded=True):
                 st.write(f"**Shape:** {df.shape}")
                 st.write(f"**Columns:** {df.columns.tolist()}")
                 
-                # Check for column name issues
+                # Checking for column name issues
                 if any(' ' in str(col) for col in df.columns):
                     st.warning("⚠️ Column names have extra spaces. Auto-cleaning...")
                     df.columns = df.columns.str.strip()
@@ -309,7 +365,7 @@ def main():
                     st.write("Please rename your date/time column to 'Time'")
                     st.stop()
             
-            # Process data
+            # Processing data
             st.write("### ⚙️ Processing Data...")
             df_clean = process_uploaded_file(df)
             
