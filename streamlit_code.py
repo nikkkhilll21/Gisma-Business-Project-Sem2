@@ -45,15 +45,14 @@ st.markdown("""
 
 # Initialize NLTK data
 @st.cache_resource
-def setup_nltk():
+def initialize_nltk():
     import nltk
     nltk.download('punkt', quiet=True)
-    nltk.download('punkt_tab', quiet=True)   # 🔴 THIS IS THE FIX
+    nltk.download('punkt_tab', quiet=True)
     nltk.download('stopwords', quiet=True)
 
-setup_nltk()
-
 initialize_nltk()
+
 
 # Helping functions
 def get_sentiment_polarity(text):
