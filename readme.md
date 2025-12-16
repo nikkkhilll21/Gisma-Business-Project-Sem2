@@ -1,10 +1,10 @@
-# 🍽️ Restaurant Review Analytics Dashboard
+# Restaurant Review Analytics Dashboard
 
 A **Streamlit-based NLP dashboard** that analyzes restaurant customer reviews to extract **sentiment, aspect-level insights, trends, and actionable business intelligence**. The project is designed to be **academically sound**, **industry-aligned**, and **portfolio-ready**.
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 Restaurants receive thousands of customer reviews across platforms. Manually analyzing them is time-consuming and subjective. This project automates the analysis by applying **Natural Language Processing (NLP)** techniques to:
 
@@ -18,14 +18,14 @@ The dashboard is built using **Python, NLTK, TextBlob, Plotly, and Streamlit**.
 
 ---
 
-## 🎯 Key Features
+##  Key Features
 
-### 🔍 Sentiment Analysis
+###  Sentiment Analysis
 - Polarity-based sentiment scoring using **TextBlob**
 - Three-class classification: Positive, Negative, Neutral
 - Overall sentiment distribution visualization
 
-### 🧠 Aspect-Based Analysis
+###  Aspect-Based Analysis
 - Rule-based extraction of restaurant aspects:
   - Food
   - Service
@@ -35,29 +35,29 @@ The dashboard is built using **Python, NLTK, TextBlob, Plotly, and Streamlit**.
 - Aspect-wise sentiment scores
 - Identification of strongest and weakest aspects
 
-### 📊 Interactive Dashboard
+###  Interactive Dashboard
 - Clean, manager-friendly UI
 - Key metrics at a glance
 - Interactive charts using Plotly
 - Expandable advanced sections
 
-### ☁️ Word Cloud Insights
+###  Word Cloud Insights
 - Buzz words from:
   - All reviews
   - Positive reviews
   - Negative reviews
 
-### 📈 Trend Analysis
+###  Trend Analysis
 - Monthly sentiment trends
 - Visual tracking of customer perception over time
 
-### 💾 Data Export
+###  Data Export
 - Download processed reviews
 - Download aspect-level sentiment analysis
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 
 ```
 restaurant-review-analytics/
@@ -70,7 +70,7 @@ restaurant-review-analytics/
 
 ---
 
-## 📄 Expected Input Format
+## Expected Input Format
 
 The dashboard accepts a **CSV file** with the following columns:
 
@@ -82,7 +82,7 @@ The dashboard accepts a **CSV file** with the following columns:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Python 3.9+**
 - **Streamlit** – dashboard & deployment
@@ -94,7 +94,7 @@ The dashboard accepts a **CSV file** with the following columns:
 
 ---
 
-## ⚠️ Important Notes
+## Important Notes
 
 - Sentiment analysis uses **TextBlob**, which:
   - Is fast and interpretable
@@ -106,7 +106,7 @@ The dashboard accepts a **CSV file** with the following columns:
 
 ---
 
-## 📈 Possible Enhancements
+## Possible Enhancements
 
 - Replace TextBlob with ML-based sentiment classifier
 - Add rating prediction (1–5 stars)
@@ -116,7 +116,7 @@ The dashboard accepts a **CSV file** with the following columns:
 
 ---
 
-## 🎓 Academic & Portfolio Value
+##  Academic & Portfolio Value
 
 This project demonstrates:
 - Applied NLP skills
@@ -132,19 +132,20 @@ Ideal for:
 
 ---
 
-## 👤 Author
+##  Author
 
 **Nikhil Kumar**  
-MSc Data Science & Artificial Intelligence  
+MSc Data Science, Artificial Intelligence and Digital Business
+Gisma Univeristy of Applied Sciences
 Aspiring AI Engineer
 
 ---
 
-## 📜 License
+## License
 
 This project is for **educational and portfolio purposes**. You are free to modify and extend it.
 
 ---
 
-✨ *If you found this project useful, consider starring the repository or building on top of it!*
+*If you found this project useful, consider starring the repository or building on top of it!*
 
